@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duy Duân | MC Song ngữ - VJ - Voice Talent</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark-mode .glass-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tab-content {
+            display: none;
+            animation: slideUp 0.4s ease-out forwards;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        /* Color transitions for customizer */
+        .theme-transition {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden theme-transition" id="main-body">
+
+    <!-- BỘ TÙY CHỈNH (CUSTOMIZER) -->
+    <div id="customizer-panel" class="fixed right-[-300px] top-0 h-full w-[300px] bg-white dark:bg-slate-900 shadow-2xl z-[100] transition-all duration-300 border-l border-slate-200 dark:border-slate-800 p-6 overflow-y-auto custom-scrollbar">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-xl font-bold dark:text-white">Tùy chỉnh trang</h3>
+            <button onclick="toggleCustomizer()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">
+                <i data-lucide="x" class="w-5 h-5 dark:text-white"></i>
+            </button>
+        </div>
+
+        <div class="space-y-6">
+            <!-- Màu chủ đạo -->
+            <div>
+                <label class="block text-sm font-medium mb-2 dark:text-slate-300">Màu thương hiệu</label>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="changeThemeColor('#2563eb')" class="w-8 h-8 rounded-full bg-blue-600 border-2 border-white shadow-sm"></button>
+                    <button onclick="changeThemeColor('#7c3aed')" class="w-8 h-8 rounded-full bg-violet-600 border-2 border-white shadow-sm"></button>
+                    <button onclick="changeThemeColor('#059669')" class="w-8 h-8 rounded-full bg-emerald-600 border-2 border-white shadow-sm"></button>
+                    <button onclick="changeThemeColor('#dc2626')" class="w-8 h-8 rounded-full bg-red-600 border-2 border-white shadow-sm"></button>
+                    <input type="color" oninput="changeThemeColor(this.value)" class="w-8 h-8 rounded-full p-0 border-0 cursor-pointer overflow-hidden">
+                </div>
+            </div>
+
+            <!-- Chế độ tối -->
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-medium dark:text-slate-300">Chế độ tối</span>
+                <button onclick="toggleDarkMode()" id="dark-mode-toggle" class="w-12 h-6 bg-slate-200 dark:bg-blue-600 rounded-full relative transition-colors">
+                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform dark:translate-x-6"></div>
+                </button>
+            </div>
+
+            <hr class="border-slate-100 dark:border-slate-800">
+
+            <!-- Chỉnh sửa nội dung -->
+            <div>
+                <label class="block text-sm font-medium mb-2 dark:text-slate-300">Tên hiển thị</label>
+                <input type="text" id="input-name" value="DUY DUÂN" oninput="updateContent('display-name', this.value)" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 ring-blue-500 outline-none dark:text-white">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-2 dark:text-slate-300">Vị trí</label>
+                <input type="text" id="input-role" value="MC Song ngữ / VJ / Voice Talent" oninput="updateContent('display-role', this.value)" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 ring-blue-500 outline-none dark:text-white">
+            </div>
+        </div>
+
+        <div class="mt-12 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
+            <p class="text-xs text-blue-600 dark:text-blue-300 leading-relaxed">Lưu ý: Các thay đổi ở đây mang tính tạm thời để bạn xem trước. Để lưu vĩnh viễn, hãy sửa trực tiếp vào file code trên GitHub.</p>
+        </div>
+    </div>
+
+    <!-- NÚT MỞ TÙY CHỈNH -->
+    <button onclick="toggleCustomizer()" class="fixed left-4 bottom-4 z-[90] bg-white dark:bg-slate-800 p-3 rounded-full shadow-2xl border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform">
+        <i data-lucide="settings" class="w-6 h-6 text-blue-600 dark:text-blue-400"></i>
+    </button>
+
+    <!-- NỀN DECOR -->
+    <div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
+        <div id="bg-glow" class="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-blue-100 dark:bg-blue-900/20 rounded-full blur-[120px] opacity-60"></div>
+        <div class="absolute bottom-0 right-0 w-[40%] h-[40%] bg-indigo-100 dark:bg-indigo-900/20 rounded-full blur-[100px] opacity-60"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-8 md:py-16">
+        <div class="grid lg:grid-cols-[350px_1fr] gap-8 md:gap-12">
+            
+            <!-- CỘT TRÁI: THÔNG TIN CỐ ĐỊNH -->
+            <aside class="space-y-8">
+                <div class="glass-card rounded-3xl p-8 shadow-xl text-center md:text-left relative overflow-hidden">
+                    <div class="w-48 h-48 mx-auto md:mx-0 rounded-2xl bg-slate-200 mb-6 overflow-hidden border-4 border-white dark:border-slate-700 shadow-md">
+                        <!-- Placeholder ảnh - Bạn thay link ảnh thật vào đây -->
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Duan" alt="Duy Duân" class="w-full h-full object-cover">
+                    </div>
+                    <h1 id="display-name" class="text-3xl font-extrabold tracking-tight dark:text-white uppercase transition-colors theme-text">DUY DUÂN</h1>
+                    <p id="display-role" class="text-blue-600 dark:text-blue-400 font-semibold mt-1">MC Song ngữ / VJ / Voice Talent</p>
+                    
+                    <div class="mt-8 space-y-4">
+                        <div class="flex items-center gap-3 text-slate-600 dark:text-slate-400">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i>
+                            <span class="text-sm">Cầu Giấy, Hà Nội</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-slate-600 dark:text-slate-400">
+                            <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                            <span class="text-sm">Học viện Báo chí & Tuyên truyền</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-slate-600 dark:text-slate-400">
+                            <i data-lucide="ruler" class="w-4 h-4"></i>
+                            <span class="text-sm">Chiều cao: 1m73</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-slate-600 dark:text-slate-400">
+                            <i data-lucide="languages" class="w-4 h-4"></i>
+                            <span class="text-sm">IELTS 7.0 (Phát âm Anh - Mỹ)</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 pt-8 border-t border-slate-100 dark:border-slate-800">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Liên hệ công việc</p>
+                        <div class="flex justify-center md:justify-start gap-4">
+                            <a href="#" class="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><i data-lucide="phone" class="w-5 h-5"></i></a>
+                            <a href="#" class="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><i data-lucide="mail" class="w-5 h-5"></i></a>
+                            <a href="#" class="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CỘT PHẢI: NỘI DUNG TAB -->
+            <main>
+                <!-- MENU TAB -->
+                <div class="glass-card p-2 rounded-2xl shadow-lg flex flex-wrap gap-2 mb-8 sticky top-4 z-40">
+                    <button onclick="switchTab('about')" class="tab-btn active px-6 py-3 rounded-xl text-sm font-bold transition-all bg-blue-600 text-white" data-tab="about">GIỚI THIỆU</button>
+                    <button onclick="switchTab('experience')" class="tab-btn px-6 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-tab="experience">KINH NGHIỆM</button>
+                    <button onclick="switchTab('partners')" class="tab-btn px-6 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-tab="partners">ĐỐI TÁC</button>
+                    <button onclick="switchTab('media')" class="tab-btn px-6 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-tab="media">TƯ LIỆU</button>
+                </div>
+
+                <!-- NỘI DUNG TAB -->
+                <div class="min-h-[500px]">
+                    
+                    <!-- TAB: GIỚI THIỆU -->
+                    <div id="tab-about" class="tab-content active space-y-8">
+                        <div class="glass-card p-8 rounded-3xl shadow-sm">
+                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 dark:text-white">
+                                <span class="w-8 h-8 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="user" class="w-4 h-4 text-blue-600"></i>
+                                </span>
+                                Đặc điểm cá nhân
+                            </h2>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div class="p-4 bg-blue-50/50 dark:bg-slate-800/50 rounded-2xl border border-blue-100/50 dark:border-slate-700">
+                                    <h4 class="font-bold text-blue-600 dark:text-blue-400 mb-1 italic">Giọng đọc</h4>
+                                    <p class="text-sm dark:text-slate-300">Nam miền Bắc rõ ràng, trầm ấm, không địa phương, linh hoạt nhiều thể loại.</p>
+                                </div>
+                                <div class="p-4 bg-indigo-50/50 dark:bg-slate-800/50 rounded-2xl border border-indigo-100/50 dark:border-slate-700">
+                                    <h4 class="font-bold text-indigo-600 dark:text-indigo-400 mb-1 italic">Kỹ năng</h4>
+                                    <p class="text-sm dark:text-slate-300">Xử lý tình huống linh hoạt, nhiệt huyết, chịu áp lực công việc cực tốt.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-3xl shadow-sm">
+                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 dark:text-white">
+                                <span class="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="briefcase" class="w-4 h-4 text-emerald-600"></i>
+                                </span>
+                                Lĩnh vực chuyên môn
+                            </h2>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="text-center p-4">
+                                    <div class="w-12 h-12 mx-auto mb-3 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center"><i data-lucide="mic-2" class="w-5 h-5 text-slate-600"></i></div>
+                                    <span class="text-sm font-semibold dark:text-white">MC Sự kiện</span>
+                                </div>
+                                <div class="text-center p-4">
+                                    <div class="w-12 h-12 mx-auto mb-3 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center"><i data-lucide="languages" class="w-5 h-5 text-slate-600"></i></div>
+                                    <span class="text-sm font-semibold dark:text-white">MC Song ngữ</span>
+                                </div>
+                                <div class="text-center p-4">
+                                    <div class="w-12 h-12 mx-auto mb-3 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center"><i data-lucide="tv" class="w-5 h-5 text-slate-600"></i></div>
+                                    <span class="text-sm font-semibold dark:text-white">VJ / BTV</span>
+                                </div>
+                                <div class="text-center p-4">
+                                    <div class="w-12 h-12 mx-auto mb-3 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center"><i data-lucide="volume-2" class="w-5 h-5 text-slate-600"></i></div>
+                                    <span class="text-sm font-semibold dark:text-white">Voice Talent</span>
+                                </div>
+                                <div class="text-center p-4">
+                                    <div class="w-12 h-12 mx-auto mb-3 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center"><i data-lucide="clapperboard" class="w-5 h-5 text-slate-600"></i></div>
+                                    <span class="text-sm font-semibold dark:text-white">TVC Voice</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: KINH NGHIỆM -->
+                    <div id="tab-experience" class="tab-content space-y-6">
+                        <!-- Project: Galaxy S25 -->
+                        <div class="glass-card rounded-3xl overflow-hidden group">
+                            <div class="aspect-video bg-slate-800 relative">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8">
+                                    <span class="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full w-fit mb-2">SỰ KIỆN CÔNG NGHỆ</span>
+                                    <h3 class="text-2xl font-bold text-white">SAMSUNG GALAXY S25 SERIES</h3>
+                                    <p class="text-slate-300 text-sm mt-1">Sự kiện ra mắt Galaxy AI tại Hà Nội Terminal với sự tham gia của KOL Chu Việt Hà.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project: Habeco -->
+                        <div class="glass-card p-8 rounded-3xl">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="music" class="w-6 h-6 text-red-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold dark:text-white">CHUỖI SỰ KIỆN HABECO - HANOI PREMIUM BAR</h3>
+                                    <p class="text-slate-500 text-sm mb-4 italic">Hợp tác cùng dàn nghệ sĩ: Bùi Công Nam, Dương Domic, Kay Trần, Quân AP...</p>
+                                    <div class="flex gap-2">
+                                        <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-xs rounded-lg dark:text-slate-400">#StagePerformance</span>
+                                        <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-xs rounded-lg dark:text-slate-400">#EventHost</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project: English Champion -->
+                        <div class="glass-card p-8 rounded-3xl">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="award" class="w-6 h-6 text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold dark:text-white">MC SONG NGỮ: ENGLISH CHAMPION 2025</h3>
+                                    <p class="text-slate-500 text-sm mb-4 italic">Chung kết cuộc thi học thuật tại Học viện Tài chính.</p>
+                                    <p class="text-sm dark:text-slate-300">Dẫn dắt hoàn toàn bằng tiếng Anh và tiếng Việt, điều phối các phần thi học thuật và giao lưu thí sinh.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: ĐỐI TÁC -->
+                    <div id="tab-partners" class="tab-content">
+                        <div class="glass-card p-8 rounded-3xl">
+                            <h2 class="text-xl font-bold mb-8 text-center text-slate-400 uppercase tracking-widest">Đã từng hợp tác cùng</h2>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                                <div class="flex items-center justify-center h-16 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100">
+                                    <span class="font-black text-2xl text-blue-800">SAMSUNG</span>
+                                </div>
+                                <div class="flex items-center justify-center h-16 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100">
+                                    <span class="font-black text-2xl text-blue-900">BIDV</span>
+                                </div>
+                                <div class="flex items-center justify-center h-16 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100">
+                                    <span class="font-black text-2xl text-red-600">HABECO</span>
+                                </div>
+                                <div class="flex items-center justify-center h-16 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100">
+                                    <span class="font-black text-2xl text-emerald-600">SHINHAN</span>
+                                </div>
+                                <div class="flex items-center justify-center h-16 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100">
+                                    <span class="font-black text-xl text-orange-600">Sacombank</span>
+                                </div>
+                                <div class="flex items-center justify-center h-16 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100 text-center">
+                                    <span class="font-bold text-sm text-slate-500 leading-tight">Học viện Báo chí & Tuyên truyền</span>
+                                </div>
+                                <div class="flex items-center justify-center h-16 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100 text-center">
+                                    <span class="font-bold text-sm text-slate-500 leading-tight">Đại học Ngoại Ngữ - ĐHQGHN</span>
+                                </div>
+                                <div class="flex items-center justify-center h-16 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100 text-center">
+                                    <span class="font-bold text-sm text-slate-500 leading-tight">MLC-ITL LOGISTICS</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: TƯ LIỆU -->
+                    <div id="tab-media" class="tab-content text-center">
+                        <div class="glass-card p-12 rounded-3xl flex flex-col items-center justify-center space-y-6">
+                            <div class="w-20 h-20 bg-blue-100 dark:bg-blue-900/40 rounded-3xl flex items-center justify-center">
+                                <i data-lucide="folder-open" class="w-10 h-10 text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold dark:text-white">Kho tư liệu Voiceoff & Dẫn</h3>
+                                <p class="text-slate-500 mt-2">Toàn bộ demo giọng đọc và video highlight các sự kiện đã tham gia.</p>
+                            </div>
+                            <div class="flex gap-4 w-full max-w-sm">
+                                <a href="#" class="flex-1 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors dark:text-white">
+                                    <i data-lucide="mic" class="w-4 h-4"></i> Voiceoff
+                                </a>
+                                <a href="#" class="flex-1 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors dark:text-white">
+                                    <i data-lucide="play" class="w-4 h-4"></i> Sự kiện
+                                </a>
+                            </div>
+                            <button class="w-full max-w-sm py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all">
+                                XEM CHI TIẾT TẠI ĐÂY
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer class="py-12 border-t border-slate-200 dark:border-slate-800 text-center">
+        <p class="text-sm text-slate-500">© 2025 Nguyễn Duy Duân. Powered by GitHub Pages.</p>
+    </footer>
+
+    <script>
+        // Khởi tạo icons
+        lucide.createIcons();
+
+        // CHUYỂN TAB
+        function switchTab(tabId) {
+            // Cập nhật Buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabId) {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
+                } else {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
+                }
+            });
+
+            // Cập nhật Nội dung
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        // TÙY CHỈNH (CUSTOMIZER)
+        function toggleCustomizer() {
+            const panel = document.getElementById('customizer-panel');
+            if (panel.style.right === '0px') {
+                panel.style.right = '-300px';
+            } else {
+                panel.style.right = '0px';
+            }
+        }
+
+        function changeThemeColor(color) {
+            // Thay đổi màu text, bg, border chủ đạo
+            const themeTexts = document.querySelectorAll('.theme-text');
+            const themeBgs = document.querySelectorAll('.bg-blue-600');
+            const toggleBg = document.getElementById('dark-mode-toggle');
+            
+            document.documentElement.style.setProperty('--theme-primary', color);
+            
+            themeBgs.forEach(el => el.style.backgroundColor = color);
+            document.getElementById('display-role').style.color = color;
+            document.getElementById('display-name').style.color = color;
+            if(document.body.classList.contains('dark-mode')) {
+                toggleBg.style.backgroundColor = color;
+            }
+        }
+
+        function toggleDarkMode() {
+            const body = document.getElementById('main-body');
+            const toggle = document.getElementById('dark-mode-toggle');
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                body.classList.replace('bg-slate-50', 'bg-slate-950');
+                body.classList.replace('text-slate-900', 'text-slate-100');
+            } else {
+                body.classList.replace('bg-slate-950', 'bg-slate-50');
+                body.classList.replace('text-slate-100', 'text-slate-900');
+            }
+        }
+
+        function updateContent(elementId, value) {
+            document.getElementById(elementId).innerText = value;
+        }
+
+        // Đóng panel nếu click ra ngoài
+        document.addEventListener('mousedown', (e) => {
+            const panel = document.getElementById('customizer-panel');
+            const settingsBtn = document.querySelector('[onclick="toggleCustomizer()"]');
+            if (!panel.contains(e.target) && !settingsBtn.contains(e.target) && panel.style.right === '0px') {
+                toggleCustomizer();
+            }
+        });
+    </script>
+</body>
+</html>
